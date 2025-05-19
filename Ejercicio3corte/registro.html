@@ -19,8 +19,6 @@
       height: 100%;
       font-family: "Cascadia Mono", sans-serif;
       font-optical-sizing: auto;
-      font-weight: <weight>;
-      font-style: norma
     }
 
     .background {
@@ -62,7 +60,7 @@
       height: 100vh;
     }
 
-    input[type="text"], input[type="email"], input[type="password"] {
+    input[type="text"], input[type="email"], input[type="password"], input[type="number"] {
       width: 100%;
       padding: 10px;
       margin: 8px 0;
@@ -90,11 +88,10 @@
       font-weight: bold;
     }
     h4 {
-    text-align: center; 
-    font-weight: normal; 
-  }
+      text-align: center; 
+      font-weight: normal; 
+    }
   </style>
-
 </head>
 <body>
   <div class="background"></div>
@@ -104,13 +101,25 @@
     <div class="register-container">
       <h2>Crear cuenta</h2>
       <br>
-      <form action="/registro" method="POST">
+      <form id="registerForm">
+        <label for="id">ID del Empleado:</label><br>
+        <input type="number" id="id" name="idEmployers" required><br>
+
         <label for="nombre">Nombre:</label><br>
-        <input type="text" id="nombre" name="nombre" required><br>
-        <label for="email">Correo electrónico:</label><br>
-        <input type="email" id="email" name="email" required><br>
+        <input type="text" id="nombre" name="name" required><br>
+
+        <label for="direccion">Dirección:</label><br>
+        <input type="text" id="direccion" name="address" required><br>
+
+        <label for="telefono">Número de Teléfono:</label><br>
+        <input type="text" id="telefono" name="number" required><br>
+
+        <label for="branch">Sector (Branch ID):</label><br>
+        <input type="number" id="branch" name="idbranch" required><br>
+
         <label for="password">Contraseña:</label><br>
         <input type="password" id="password" name="password" required><br><br>
+
         <button type="submit">Registrarse</button>
       </form>
       <br>
@@ -118,5 +127,31 @@
       <a href="index.html"> Inicia sesión</a>
     </div>
   </div>
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const idEmployers = document.getElementById("id").value;
+      const name = document.getElementById("nombre").value;
+      const address = document.getElementById("direccion").value;
+      const number = document.getElementById("telefono").value;
+      const idbranch = document.getElementById("branch").value;
+      const password = document.getElementById("password").value;
+
+      const response = await fetch("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ idEmployers, name, address, number, idbranch, password })
+      });
+
+      if (response.ok) {
+        alert("¡Registro exitoso! Ahora puedes ingresar tu perfil.");
+        window.location.href = "index.html";
+      } else {
+        const error = await response.text();
+        alert("Error al registrar: " + error);
+      }
+    });
+  </script>
 </body>
 </html>

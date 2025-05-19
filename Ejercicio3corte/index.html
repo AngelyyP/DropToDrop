@@ -58,7 +58,7 @@
       transform: translateY(-50%);
     }
 
-    input[type="email"], input[type="password"] {
+    input[type="email"], input[type="password"], input[type="text"] {
       width: 100%;
       padding: 10px;
       margin: 8px 0;
@@ -98,14 +98,17 @@
     <h2>Iniciar sesión</h2>
     <br>
 
-    <form action="/login" method="POST">
-      <label for="email">Correo electrónico:</label><br>
-      <input type="email" id="email" name="email" required><br>
-      <label for="password">Contraseña:</label><br>
-      <input type="password" id="password" name="password" required><br>
-      <button type="submit">Entrar</button>
+    <form id="loginForm">
+      <label for="LogIn">Nombre:</label><br>
+      <input type="text" id="LogIn" name="name" required><br>
+      <label for="LogPassword">Contraseña:</label><br>
+      <input type="password" id="LogPassword" name="password" required><br>
+      <button type="submit" id="LogInButton">Entrar</button>
     </form>
     <a href="registro.html" class="register-button">Registrarse</a>
   </div>
+
+  <!-- Conectar el script -->
+  <script src="./frontend/login.js"></script>
 </body>
 </html>
