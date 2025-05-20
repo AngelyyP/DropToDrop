@@ -3,16 +3,24 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { FirestoreService } from './nosql/firestore_service.js';
 import SqlConnection from './sql/connection.js';
+import FirestoreService from './nosql/firestore_service.js';
+import { Console } from 'console';
+
+//CONFIGURACION FIREBASE
+
+
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+
+console.log("Directorio actual:", __dirname); // Agrega esta línea para depurar
+
+
 const app = express();
 const port = 3000;
-
-const imagesService = new FirestoreService("LoginApp");
 
 // Middleware básico
 app.use(express.json());
@@ -30,6 +38,7 @@ const storage = multer.diskStorage({
     cb(null, uniqueName);
   }
 });
+
 const upload = multer({ storage });
 
 // POST /upload — subir imagen y guardar nombre en Firestore
@@ -97,6 +106,18 @@ app.get('/user/:username', async (req, res) => {
   }
 });
 
+
+app.get('/deudores', async (req, res) => {
+
+
+    console.log("ENTRANDO A DEUDORES");
+
+    
+    res.sendFile(path.join(__dirname, 'deudores.html'));
+
+
+});
+
 // POST /login — verificar credenciales del usuario
 app.post('/login', async (req, res) => {
   const { name, password } = req.body;
@@ -104,6 +125,8 @@ app.post('/login', async (req, res) => {
 
   try {
     await db.connectToDb();
+
+    
     const result = await db.query(
       "SELECT * FROM employers WHERE name = ? AND password = ?",
       [name, password]
@@ -111,9 +134,13 @@ app.post('/login', async (req, res) => {
     await db.closeConnection();
 
     if (result.length === 0) {
+      console.log("Usuario no encontrado o contraseña incorrecta");
       res.status(404).send("El usuario no existe o la contraseña es incorrecta.");
     } else {
-      res.status(200).json(result[0]);
+
+      res.status(200).send("Usuario autenticado exitosamente.");
+
+    
     }
   } catch (err) {
     console.error("SQL error:", err);
@@ -121,7 +148,43 @@ app.post('/login', async (req, res) => {
   }
 });
 
+
+
+//perfil
+
+app.post('/perfil', upload.single('image'), async (req, res) => {
+  console.log("Datos recibidos:", req.body); // Form fields: nombre, apellido, edad
+  console.log("Archivo recibido:", req.file);
+
+  const employers = new FirestoreService("employers");
+
+  console.log("Firestore documents", await employers.getAllDocuments()); // Agrega esta línea para depurar
+
+  let randomId = Math.floor(Math.random() * 1000000);
+
+  employers.PostDocument(randomId, {
+    filename: req.body.image,
+    age: req.body.edad,
+    name: req.body.nombre,
+    surname: req.body.apellido
+  });
+
+  res.send({'Message': 'Success'});
+});
+
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
 
+
+// GET /perfiles — obtener todos los perfiles de Firestore
+app.get('/perfiles', async (req, res) => {
+  const employers = new FirestoreService("employers");
+  const data = await employers.getAllDocuments();
+
+  if (data.length === 0) {
+    res.status(404).send("No hay perfiles registrados.");
+  } else {
+    res.status(200).json(data);
+  }
+});

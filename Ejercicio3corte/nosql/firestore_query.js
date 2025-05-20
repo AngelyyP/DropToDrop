@@ -71,4 +71,33 @@ export class FirestoreQuery {
         });
         return results;
     }
+    
+}
+import { FirestoreQuery } from './nosql/firestore_query.js';
+
+export async function mostrarPerfiles() {
+  const fq = new FirestoreQuery('employers'); // Cambia el nombre si tu colección es diferente
+  const perfiles = await fq.limitedQuery(10);
+
+  const lista = document.getElementById('listaPerfiles');
+  lista.innerHTML = '';
+
+  if (perfiles.length === 0) {
+    lista.innerHTML = '<p>No hay perfiles registrados.</p>';
+    return;
+  }
+
+  perfiles.forEach(perfil => {
+    const div = document.createElement('div');
+    div.style.marginBottom = '10px';
+    div.style.padding = '10px';
+    div.style.background = '#333';
+    div.style.borderRadius = '5px';
+    div.innerHTML = `
+      <strong>Nombre:</strong> ${perfil.nombre || ''}<br>
+      <strong>Apellido:</strong> ${perfil.apellido || ''}<br>
+      <strong>Edad:</strong> ${perfil.edad || ''}
+    `;
+    lista.appendChild(div);
+  });
 }

@@ -1,7 +1,9 @@
+
+import e from 'express';
 import { db } from './firebase_init.js';
 import { collection, getDocs, getDoc, addDoc, setDoc, doc } from 'firebase/firestore';
 
-export class FirestoreService {
+class FirestoreService {
   constructor(collectionName) {
     this.collectionRef = collection(db, collectionName);
   }
@@ -37,4 +39,6 @@ export class FirestoreService {
     }
   }
   
+  
 }
+export default FirestoreService;

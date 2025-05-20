@@ -1,4 +1,6 @@
-const mysql = require('mysql2');
+import mysql from 'mysql2';
+
+
 const config = {
     host: 'localhost',
     user: 'root',
@@ -49,5 +51,4 @@ class SqlConnection{
       }
     
 }
-
-module.exports=SqlConnection;
+export default SqlConnection;

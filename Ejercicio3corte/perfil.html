@@ -7,18 +7,34 @@
   <style>
     body {
       font-family: 'Cascadia Mono', monospace;
-      background-color: #f0f0f0;
+      background-color: #1d1d1d;
       margin: 0;
       padding: 0;
+       background-image: url('FondoPagina.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+  
+      z-index: -2;
     }
-
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.8); 
+      z-index: -1;
+    }
     .container {
       max-width: 600px;
       margin: 50px auto;
-      background-color: white;
+      background-color: rgb(61, 61, 61);
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      font-size: 15px;
+      color: rgb(243, 243, 243);
     }
 
     h2 {
@@ -38,7 +54,7 @@
       height: 150px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid #ccc;
+      border: 2px solid #030303;
     }
 
     .profile-img input {
@@ -85,33 +101,60 @@
       text-decoration: none;
       color: #007BFF;
     }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 30px;
+      background-color:rgb(63, 63, 63);
+      border-bottom: 2px solid #4d4c4c;
+    }
+
+    .top-bar h1 {
+      font-size: 24px;
+      color: white;
+    }
   </style>
 </head>
 <body>
+
+
+  <div class="top-bar">
+    <h1 onclick="window.location.href='/deudores'">Panel de Deudores</h1>
+    <button class="config-button" onclick="window.location.href='perfil.html'">⚙️</button>
+  </div>
+
+
   <div class="container">
     <h2>Configuración de Perfil</h2>
-    <div class="profile-img">
-      <img id="preview" src="https://via.placeholder.com/150" alt="Imagen de perfil">
-      <input type="file" accept="image/*" onchange="previewImage(event)">
-    </div>
 
-    <div class="form-group">
-      <label for="nombre">Nombre</label>
-      <input type="text" id="nombre" placeholder="Nombre">
-    </div>
+    <form id="perfilForm" enctype="multipart/form-data">
+      <div class="profile-img">
+        <img id="preview" src="https://via.placeholder.com/150" alt="Imagen de perfil">
+        <input type="file" accept="image/*" name="image" onchange="previewImage(event)">
+      </div>
 
-    <div class="form-group">
-      <label for="apellido">Apellido</label>
-      <input type="text" id="apellido" placeholder="Apellido">
-    </div>
+      <div class="form-group">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Nombre" required>
+      </div>
 
-    <div class="form-group">
-      <label for="edad">Edad</label>
-      <input type="number" id="edad" placeholder="Edad">
-    </div>
+      <div class="form-group">
+        <label for="apellido">Apellido</label>
+        <input type="text" id="apellido" name="apellido" placeholder="Apellido" required>
+      </div>
 
-    <button class="btn" onclick="guardarPerfil()">Guardar Cambios</button>
-    <a href="index.html" class="back-link">⬅ Volver a Deudores</a>
+      <div class="form-group">
+        <label for="edad">Edad</label>
+        <input type="number" id="edad" name="edad" placeholder="Edad" required>
+      </div>
+
+      <button class="btn" type="submit">Guardar Cambios</button>
+      <button class="btn" type="button" onclick="fetchPerfiles()">Ver perfiles</button>
+      <div id="listaPerfiles"></div>
+      <a href="/deudores" class="back-link">⬅ Volver a Deudores</a>
+    </form>
   </div>
 
   <script>
@@ -124,15 +167,55 @@
       reader.readAsDataURL(event.target.files[0]);
     }
 
-    function guardarPerfil() {
+    document.getElementById("perfilForm").onsubmit = async function(event) {
+      console.log("Formulario enviado");
+      event.preventDefault(); // Evita el envío del formulario
+
       const nombre = document.getElementById("nombre").value;
       const apellido = document.getElementById("apellido").value;
       const edad = document.getElementById("edad").value;
 
       alert(`Perfil guardado:\nNombre: ${nombre}\nApellido: ${apellido}\nEdad: ${edad}`);
       
-      // Aquí puedes guardar en Firebase o en base de datos si estás conectado
+      const formData = new FormData();
+      formData.append("image", document.querySelector('input[type="file"]').files[0]);
+
+      formData.append("nombre", nombre);
+      formData.append("apellido", apellido);
+      formData.append("edad", edad);
+
+      console.log("Datos del formulario:", formData);
+
+      try {
+
+        const response = await fetch("/perfil", {
+            method: "POST",
+            body: formData
+        });
+      } catch (error) {
+        console.error("Error:", error);
+        alert("No se pudo conectar con el servidor.");
+      }
+}
+
+    async function fetchPerfiles() {
+      try {
+        const response = await fetch("/perfiles");
+        const data = await response.json();
+        const listaPerfiles = document.getElementById("listaPerfiles");
+        listaPerfiles.innerHTML = "<h3>Lista de Perfiles</h3>";
+        data.forEach(perfil => {
+          listaPerfiles.innerHTML += `<p>${perfil.name} ${perfil.surname} - Edad: ${perfil.age}</p>`;
+        });
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
+
+
+
+
   </script>
-</body>
+
+  </body>
 </html>

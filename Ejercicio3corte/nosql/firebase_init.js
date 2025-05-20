@@ -6,12 +6,12 @@ import { getFirestore } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBBgoWaCd6APngiq3Jv-d4abmByqZyFxJ8",
-  authDomain: "db-multimedia.firebaseapp.com",
-  projectId: "db-multimedia",
-  storageBucket: "db-multimedia.firebasestorage.app",
-  messagingSenderId: "703694156223",
-  appId: "1:703694156223:web:cd702f775e4417841db10a"
+  apiKey: "AIzaSyC_uAo-lV6fnHedZa8ukkBPLxztTZgVXGA",
+  authDomain: "droptodrop-36001.firebaseapp.com",
+  projectId: "droptodrop-36001",
+  storageBucket: "droptodrop-36001.firebasestorage.app",
+  messagingSenderId: "910118671887",
+  appId: "1:910118671887:web:bffdac23a15318f1c5b57a"
 };
 
 

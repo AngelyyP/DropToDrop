@@ -16,10 +16,9 @@
     html, body {
       height: 100%;
       font-family: "Cascadia Mono", monospace;
-      background-color: #f0f0f0;
     }
 
-    .background {
+   .background {
       position: fixed;
       top: 0;
       left: 0;
@@ -47,12 +46,13 @@
       justify-content: space-between;
       align-items: center;
       padding: 20px 30px;
-      background-color: white;
-      border-bottom: 2px solid #ccc;
+      background-color: rgb(63, 63, 63);
+      border-bottom: 2px solid #000000;
     }
 
     .top-bar h1 {
       font-size: 24px;
+      color: rgb(255, 255, 255);
     }
 
     .config-button {
@@ -150,7 +150,7 @@
   <div class="overlay"></div>
 
   <div class="top-bar">
-    <h1>Panel de Deudores</h1>
+    <h1 onclick="window.location.href='/deudores'">Panel de Deudores</h1>
     <button class="config-button" onclick="window.location.href='perfil.html'">⚙️</button>
   </div>
 
@@ -197,6 +197,9 @@
   </div>
 
   <script>
+
+  
+
     function openModal(nombre, codeudor, direccion) {
       document.getElementById('clienteNombre').textContent = nombre;
       document.getElementById('clienteCodeudor').textContent = codeudor;

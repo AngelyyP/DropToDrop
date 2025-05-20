@@ -1,44 +1,3 @@
-// Registrar empleado
-document.getElementById("SignInButton").addEventListener("click", () => {
-    const name = document.getElementById("SignIn").value;
-    const password = document.getElementById("password").value;
-    const passwordRepeat = document.getElementById("passwordRepeat").value;
-
-    if (password !== passwordRepeat) {
-        alert("Passwords do not match.");
-        return;
-    }
-
-    if (!name || !password) {
-        alert("All fields are required.");
-        return;
-    }
-
-    const data = { name, password };
-
-    fetch("http://localhost:3000/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-    })
-        .then(response => {
-            if (response.ok) {
-                return response.text();
-            } else {
-                throw new Error("Registration failed.");
-            }
-        })
-        .then(message => {
-            alert(message);
-            document.getElementById("SignIn").value = "";
-            document.getElementById("password").value = "";
-            document.getElementById("passwordRepeat").value = "";
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            alert("An error occurred while registering.");
-        });
-});
 
 // Iniciar sesión
 document.getElementById("loginForm").addEventListener("submit", async (event) => {
@@ -46,6 +5,9 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
 
     const name = document.getElementById("LogIn").value;
     const password = document.getElementById("LogPassword").value;
+
+
+    console.log("Datos de inicio de sesión:", { name, password }); // Agrega esta línea para depurar
 
     if (!name || !password) {
         alert("Por favor ingresa tu nombre y contraseña.");
@@ -60,7 +22,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
         });
 
         if (response.ok) {
-            window.location.href = "/deudores.html";
+            window.location.href = "/deudores";
         } else if (response.status === 401) {
             alert("Usuario o contraseña incorrectos. Si no tienes cuenta, regístrate.");
         } else if (response.status === 404) {
